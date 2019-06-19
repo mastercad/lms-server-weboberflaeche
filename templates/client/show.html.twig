@@ -1,0 +1,39 @@
+<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Details zu Mapping Eintrag {{ id }}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container">
+                    <div class="row">
+                        <label >
+                            ID: {{ client.id }}
+                        </label>
+                    </div>
+                    <div class="row">
+                        <label>
+                            Name: {{ client.name }}
+                        </label>
+                    </div>
+                    <div class="row">
+                        <label>
+                            IP: {{ client.ip }}
+                        </label>
+                    </div>
+                    <div class="row">
+                        <label>
+                            Mac Adresse: {{ client.mac_address }}
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Schließen</button>
+            </div>
+        </div>
+    </div>
+</div>

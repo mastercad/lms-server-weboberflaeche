@@ -1,0 +1,98 @@
+version: '3'
+services:
+
+  apache:
+    build: .docker/apache
+    container_name: lms_server_apache
+    ports:
+      - 80:80
+    volumes:
+      - .docker/apache/config/vhosts:/etc/apache2/sites-enabled
+      - .:/var/www/lms_server
+    depends_on:
+      - php
+    links:
+      - php
+#    network_mode: host
+    networks:
+      lms_net:
+        ipv4_address: 172.0.1.1
+
+  mysql:
+    image: mysql
+    restart: always
+    user:
+      1000:1000
+    container_name: lms_server_mysql
+    command: --default-authentication-plugin=mysql_native_password
+    volumes:
+      - .docker/data/db:/var/lib/mysql
+#    network_mode: host
+    networks:
+      lms_net:
+        ipv4_address: 172.0.1.2
+
+#  adminer:
+#    image: adminer
+#    container_name: lms_server_adminer
+#    restart: on-failure
+#    ports:
+#      - '8080:8080'
+#    network_mode: host
+#    networks:
+#      - lms_server_net
+
+  php:
+    build: .docker/php
+    container_name: lms_server_php
+    volumes:
+      - .:/var/www/lms_server
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+#    environment:
+#      - maildev_host=lms_server_maildev
+    depends_on:
+#      - maildev
+      - mysql
+    links:
+      - mysql
+#    network_mode: host
+    networks:
+      lms_net:
+        ipv4_address: 172.0.1.3
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: lms_server_phpmyadmin
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+    ports:
+      - 8181:80
+    links:
+      - mysql
+#    network_mode: host
+    networks:
+      lms_net:
+        ipv4_address: 172.0.1.4
+
+#  maildev:
+#    image: djfarrelly/maildev
+#    container_name: lms_server_maildev
+#    ports:
+#      - 8001:80
+#    network_mode: host
+#    networks:
+#      - lms_server_net
+
+networks:
+  lms_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.0.1.0/16
+        
+
+volumes:
+  data:
+    driver: local

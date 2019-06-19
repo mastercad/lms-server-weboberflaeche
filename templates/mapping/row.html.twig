@@ -1,0 +1,34 @@
+<tr>
+    <th scope="row">
+        <input type="checkbox" class="checkbox-select-row custom-checkbox" data-id="{{ mapping.getId }}" />
+        {{ mapping.getRfid }}
+    </th>
+    <td>
+        {{ mapping.getAdditionalInformation }}
+    </td>
+    <td>
+        <div class="form-inline">
+<!--            <button type="button" data-id="{{ mapping.getId }}" class="btn btn-primary mapping-detail">
+
+            </button>-->
+
+            <div class="col-lg-2">
+                Local Path:
+            </div>
+            <div class="col-lg-10">
+                {{ mapping.getLocalPath }}
+            </div>
+
+            <div class="col-lg-2">
+                LMS Path:
+            </div>
+            <div class="col-lg-10">
+                {{ mapping.getLmsPath }}
+            </div>
+
+        </div>
+    </td>
+    <td class="text-right row-options">
+        {% include 'mapping/row_options.html.twig' with {'id':mapping.getId} only %}
+    </td>
+</tr>

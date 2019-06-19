@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>{% block title %}Welcome!{% endblock %}</title>
+
+        {% block stylesheets %}
+            {# 'app' must match the first argument to addEntry() in webpack.config.js #}
+            {{ encore_entry_link_tags('app') }}
+
+            <!-- Renders a link tag (if your module requires any CSS)
+                 <link rel="stylesheet" href="/build/app.css"> -->
+        {% endblock %}
+    </head>
+    <body>
+        <div class="container">
+            {% block body %}
+                <div class="row p-2">
+                    <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                        <button type="button" class="btn btn-primary sync_mappings">
+                            Mapping für andere LMS<br />
+                            Stationen übernehmen
+                        </button>
+                    </div>
+
+                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6"></div>
+
+                    <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 justify-content-end">
+                                <ul class="nav">
+
+                                    <li class="nav-item dropdown">
+                                        <a class="nav-link dropdown-toggle float-left" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                                            LMS Station auswählen
+                                        </a>
+                                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="Preview">
+                                            <ul id="clients_select_container" >
+                                                <li><div class="spinner-grow text-primary"></div></li>
+                                            </ul>
+                                        </div>
+                                        <span class="fa fa-plus-circle new-client-entry float-left" data-toggle="tooltip" data-placement="auto" title="Neuen Eintrag anlegen"></span>
+                                    </li>
+
+                                </ul>
+                            </div>
+
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 justify-content-end text-right">
+                                <input id="rfid_search" type="text" class="form-text" placeholder="Suche nach RFID / Zusatzinfo" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>
+                                    <input type="checkbox" class="checkbox-select-all custom-checkbox" />
+                                    RFID
+                                </th>
+                                <th>
+                                    Zusatzinfo
+                                </th>
+                                <th>
+                                    Mappings
+                                </th>
+                                <th>
+                                    Aktionen
+                                    <i class="fa fa-plus-circle new-mapping-entry" data-toggle="tooltip" data-placement="auto" title="Neuen Eintrag anlegen"></i>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody id="mapping_content">
+
+                        </tbody>
+                    </table>
+                </div>
+            {% endblock %}
+        </div>
+        {% block javascripts %}
+            {{ encore_entry_script_tags('app') }}
+            {{ encore_entry_script_tags('global') }}
+
+            <!-- Renders app.js & a webpack runtime.js file
+                <script src="/build/runtime.js"></script>
+                <script src="/build/app.js"></script> -->
+        {% endblock %}
+    </body>
+</html>

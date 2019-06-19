@@ -1,0 +1,7 @@
+<ul>
+    {% for client in clients %}
+        <li class="media-type-drop-down-entry" data-id="{{ mediaType.id }}">
+            <a href="#{{ mediaType.id }}">{{ mediaType.name }}</a>
+        </li>
+    {% endfor %}
+</ul>

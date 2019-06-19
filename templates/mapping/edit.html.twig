@@ -1,0 +1,38 @@
+{% form_theme form with ['bootstrap_4_horizontal_layout.html.twig', 'form/fields.html.twig'] %}
+{% form_theme form.local_path 'form/file_search.html.twig' %}
+{% form_theme form.lms_path 'form/file_search.html.twig' %}
+
+<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Details zu Mapping Eintrag
+                    {% if form.vars.value.id is not null %}
+                        {{ form.vars.value.id }} bearbeiten
+                    {% else %}
+                        anlegen
+                    {% endif %}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    {{ form_start(form, {'action': path('mapping-save'), 'method': 'POST'}) }}
+                        {{ form_widget(form) }}
+                    {{ form_end(form) }}
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary">
+                    {% if form.vars.value.id is not null %}
+                        Aktualisieren
+                    {% else %}
+                        Anlegen
+                    {% endif %}
+                </button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Schließen</button>
+            </div>
+        </div>
+    </div>
+</div>
