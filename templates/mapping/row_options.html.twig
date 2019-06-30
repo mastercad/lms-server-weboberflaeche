@@ -1,5 +1,10 @@
 <div class="row">
     <p class="option-icon fa fa-edit mapping-edit" data-id="{{ id }}" data-toggle="tooltip" data-placement="auto" title="Eintrag bearbeiten"></p>
     <p class="option-icon fa fa-trash mapping-delete" data-id="{{ id }}" data-toggle="tooltip" data-placement="auto" title="Eintrag löschen"></p>
-    <div id="progress_bar_{{ id }}" class="progress-bar"></div>
+    <p class="option-icon fa fa-refresh mapping-sync" data-id="{{ id }}" data-toggle="tooltip" data-placement="auto" title="Eintrag Synchronisieren"></p>
+    <p class="option-icon fa fa-download mapping-download" data-id="{{ id }}" data-toggle="tooltip" data-placement="auto" title="Eintrag Aktualisieren"></p>
+    <p class="option-icon fa fa-upload mapping-upload" data-id="{{ id }}" data-toggle="tooltip" data-placement="auto" title="Eintrag Senden"></p>
+</div>
+
+<div id="progress_bar_container_{{ id }}" class="progress-bar-container">
 </div>

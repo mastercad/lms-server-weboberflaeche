@@ -1,9 +1,9 @@
-<tr>
+<tr id="mapping_row_{{ mapping.getId }}">
     <th scope="row">
         <input type="checkbox" class="checkbox-select-row custom-checkbox" data-id="{{ mapping.getId }}" />
-        {{ mapping.getRfid }}
+        <span class="input-rfid" data-orig="{{ mapping.getRfid|base64_encode }}">{{ mapping.getRfid }}</span>
     </th>
-    <td>
+    <td class="input-additional-information" data-orig="{{ mapping.getAdditionalInformation|base64_encode }}">
         {{ mapping.getAdditionalInformation }}
     </td>
     <td>
@@ -15,20 +15,20 @@
             <div class="col-lg-2">
                 Local Path:
             </div>
-            <div class="col-lg-10">
+            <div class="col-lg-10 input-local-path" data-orig="{{ mapping.getLocalPath|base64_encode }}">
                 {{ mapping.getLocalPath }}
             </div>
 
             <div class="col-lg-2">
                 LMS Path:
             </div>
-            <div class="col-lg-10">
+            <div class="col-lg-10 input-lms-path" data-orig="{{ mapping.getLmsPath|base64_encode }}">
                 {{ mapping.getLmsPath }}
             </div>
 
         </div>
     </td>
     <td class="text-right row-options">
-        {% include 'mapping/row_options.html.twig' with {'id':mapping.getId} only %}
+        {% include 'mapping/row_options.html.twig' with {'id': mapping.getId} only %}
     </td>
 </tr>

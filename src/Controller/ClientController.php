@@ -27,6 +27,7 @@ use Symfony\Component\HttpClient\Exception\TransportException;
 use GuzzleHttp\Client as GuzzleHttpClient;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Response as GuzzleHttpResponse;
+use GuzzleHttp\RequestOptions;
 
 /**
  * Klasse für alle notwendigen Frontend Interaktionen für einen Client.
@@ -59,7 +60,7 @@ class ClientController extends AbstractController
         if ('json' === $responseType) {
             $serializer = $this->container->get('serializer');
             $clients = $serializer->serialize($clients, 'json');
-            return new JsonResponse(json_decode($clients));
+            return new JsonResponse(\json_decode($clients));
         }
         return $this->render(
             'client/index.html.twig',
@@ -80,19 +81,30 @@ class ClientController extends AbstractController
      */
     public function indexOnlineAction(NetworkScanner $networkScanner)
     {
-        return new JsonResponse($networkScanner->scan());
-        
-        return new JsonResponse(
-            [
-                [
-                    'ip' => '172.19.0.7',
-                    'port' => ''
-                ]
-            ]
-        );
+        if (1 == $_ENV['SCAN_ACTIVE']
+            || "true" === $_ENV['SCAN_ACTIVE']
+        ) {
+            return new JsonResponse($networkScanner->scan());
+        }
+
+        if (!isset($_ENV['CLIENTS'])) {
+            return new JsonResponse(['code' => 500, 'content' => 'Keine Clients hinterlegt und Scan deaktiviert!']);
+        }
+
+        try {
+            $clients = \json_decode($_ENV['CLIENTS']);
+            if (is_array($clients)) {
+                return new JsonResponse($clients);
+            }
+        } catch (\InvalidArgumentException $exception) {
+            return new JsonResponse(['code' => 500, 'content' => 'Scan deaktiviert, aber Clients im falschen Format hinterlegt!']);
+        }
     }
 
     /**
+     * @todo wenn ich mit testen und abstimmen fertig bin, muss das hier alles in
+     * einen service ausgelagert werden!
+     * 
      * Load Details from given online Client.
      *
      * @Route("/client/detail/{url}", name="client-online-details")
@@ -108,7 +120,10 @@ class ClientController extends AbstractController
             $code = $response->getStatusCode();
             $content = (string) $response->getBody()->getContents();
 
-            if ($code >= 200 && $code < 400 && 0 < strlen($content)) {
+            if ($code >= 200 
+                && $code < 400 
+                && 0 < strlen($content)
+            ) {
                 return new JsonResponse(
                     [
                         'code' => $code,
@@ -137,11 +152,22 @@ class ClientController extends AbstractController
                 $repository = $this->getDoctrine()->getRepository(Client::class);
                 $clientEntity = $repository->findOneBy(['ip' => $jsonContent->ip]);
 
+                // @TODO wenn client nicht gefunden wurde mir IP, nach namen suchen
+                // wird der gefunden, soll eine meldung ans frontend gegeben werden
+                // dass der gefundene name bereits vergeben ist und ob die daten
+                // überschrieben werden sollen.
+
+                // aktuell wird es einfach überschrieben, weil die anforderung ist,
+                // dass die daten von den client prämisse haben
+                if (!$clientEntity) {
+                    $clientEntity = $repository->findOneBy(['name' => $jsonContent->name]);
+                }
+
                 if (!$clientEntity) {
                     $clientEntity = new Client();
                 }
 
-                // client noch unbekannt => anlegen und client die neuen daten bekannt geben
+                // client in die datenbank schreiben oder vorhandenen eintrag updaten
                 if ($content) {
                     $clientEntity->setIp($jsonContent->ip);
                     $clientEntity->setName($jsonContent->name);
@@ -151,18 +177,22 @@ class ClientController extends AbstractController
                     $entityManager->persist($clientEntity);
                     $entityManager->flush();
 
+                    // neuen eintrag an den client senden
                     if (!property_exists($jsonContent, 'id')) {
-                        
-                        $response = $client->put(
-                            base64_decode($url).'/api/client', 
-                            [
-                                'form_params' => [
+                        $client = new GuzzleHttpClient();
+                        $response = $client->post(
+                            base64_decode($url).'/api/client', [
+                                RequestOptions::FORM_PARAMS => [
                                     'client' => [
                                         'id'          => $clientEntity->getId(),
                                         'ip'          => $clientEntity->getIp(),
                                         'mac_address' => $clientEntity->getMacAddress(),
                                         'name'        => $clientEntity->getName()
                                     ]
+                                ],
+                                RequestOptions::HEADERS => [
+                                    'Accept' => 'application/x-www-form-urlencoded',
+                                    'Content-type' => 'application/x-www-form-urlencoded'
                                 ]
                             ]
                         );
@@ -171,7 +201,7 @@ class ClientController extends AbstractController
                     return new JsonResponse(
                         [
                             'code' => 200, 
-                            'content' => $response
+                            'content' => json_decode($response->getBody()->getContents())
                         ]
                     );
                 } else {

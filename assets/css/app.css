@@ -33,3 +33,7 @@ body {
 .edit-client-entry {
     cursor: pointer;
 }
+
+.file-select-btn {
+    cursor: pointer;
+}

@@ -9,6 +9,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use GuzzleHttp\Client as GuzzleHttpClient;
+use GuzzleHttp\RequestOptions;
+use Psr\Log\LoggerInterface;
+use GuzzleHttp\Exception\ServerException;
 
 class MappingController extends AbstractController
 {
@@ -29,28 +33,6 @@ class MappingController extends AbstractController
                 'mappings' => $mappings
             ]
         );
-    }
-
-    /**
-     * Action to Sync given Mappings to given Clients.
-     *
-     * @Route("/mapping/sync", name="mapping-sync")
-     *
-     * @param Request $request
-     *
-     * @return Response
-     * @return JsonResponse
-     */
-    public function syncAction(Request $request) {
-        $mappings = $request->get('mappings');
-        $clients = $request->get('clients');
-        $responseType = $request->get('response_type');
-        $response = ['success' => true];
-
-        if ('json' === $responseType) {
-            return new JsonResponse($response);
-        }
-        return $this->render('mapping/sync.html.twig');
     }
 
     /**
@@ -87,7 +69,9 @@ class MappingController extends AbstractController
         /** @var Mapping $mapping */
         $mapping = $this->getDoctrine()->getRepository(Mapping::class)->find($id);
 
-        if ($id && !$mapping) {
+        if ($id 
+            && !$mapping
+        ) {
             throw $this->createNotFoundException('Kein Mapping mit ID '.$id.' gefunden!');
         } else if (!$id && !$mapping) {
             $mapping = new Mapping();
@@ -134,8 +118,6 @@ class MappingController extends AbstractController
             $entityManager->flush();
 
             $result['success'] = true;
-
-//            return $this->redirectToRoute('task_success');
         } else {
             $content = preg_replace('/^.*?<div class="modal/is', '<div class="modal', $this->render('mapping/edit.html.twig', [
                 'form' => $form->createView(),
@@ -152,5 +134,85 @@ class MappingController extends AbstractController
         return $this->render('client/save.html.twig', [
             'result' => $result
         ]);
+    }
+
+    /**
+     * Action to Sync given Mappings to given Clients.
+     *
+     * @Route("/mapping/sync", name="mapping-sync")
+     *
+     * @param Request $request
+     *
+     * @return Response
+     * @return JsonResponse
+     */
+    public function syncAction(LoggerInterface $logger, Request $request) {
+        $mappingsRequest = $request->get('mappings');
+        $clientsRequest = $request->get('clients');
+
+        $clients = $this->getDoctrine()->getRepository(Client::class)->findBy(['id' => $clientsRequest]);
+        $responseSummary = [];
+
+        /** @var Client $lmsClient */
+        foreach ($clients as $lmsClient) {
+            /** @var Mapping $mapping */
+            foreach ($mappingsRequest as $mapping) {
+                try {
+                    $httpClient = new GuzzleHttpClient();
+                    
+                    /** Handle Token with client */
+                    $currentResponse = $httpClient->post(
+                        $lmsClient->getIp().'/api/mapping/sync', 
+                        [
+                            RequestOptions::FORM_PARAMS => [
+                                'mapping' => $mapping,
+                                'file_size' => filesize($mapping['lms_path'])
+                            ],
+                            RequestOptions::HEADERS => [
+                                'Accept' => 'application/x-www-form-urlencoded',
+                                'Content-type' => 'application/x-www-form-urlencoded'
+                            ]
+                        ],
+                        RequestOptions::MULTIPART
+                    );
+                    
+                    $token = json_decode($currentResponse->getBody())->token;
+                    
+                    $currentResponse = $httpClient->post(
+                        $lmsClient->getIp().'/api/transfer/store', 
+                        [
+                            RequestOptions::HEADERS => [
+    #                            'Accept' => 'application/json'
+                            ],
+                            RequestOptions::MULTIPART => [
+                                [
+                                    'name' => 'upload',
+                                    'contents' => fopen($mapping['lms_path'], 'rb'),
+                                    'filename' => basename($mapping['lms_path'])
+                                ]
+                            ]
+                        ]
+                    );
+
+                    $responseSummary[] = [
+                        'clientName' => $lmsClient->getName(),
+                        'clientId' => $lmsClient->getId(),
+                        'mappingId' => $mapping['id'],
+                        'token' => $token,
+                        'request' => json_decode($currentResponse->getBody()),
+                    ];
+                } catch (ServerException $exception) {
+                    $logger->debug($exception->getResponse()->getBody()->getContents());
+                }
+            }
+        }
+
+        $responseType = $request->get('response_type');
+        $response = ['success' => true, 'content' => json_encode($responseSummary)];
+
+        if ('json' === $responseType) {
+            return new JsonResponse($response);
+        }
+        return $this->render('mapping/sync.html.twig');
     }
 }

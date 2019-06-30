@@ -36,9 +36,9 @@ class Mapping
     private $additionalInformation;
 
     /**
-     * @var string
+     * @var ?string
      *
-     * @ORM\Column(name="local_path", type="string", length=255, nullable=false)
+     * @ORM\Column(name="local_path", type="string", length=255, nullable=true)
      */
     private $localPath;
 
@@ -127,19 +127,19 @@ class Mapping
     }
 
     /**
-     * @return string
+     * @return ?string
      */
-    public function getLocalPath():? string
+    public function getLocalPath(): ?string
     {
         return $this->localPath;
     }
 
     /**
-     * @param string $localPath
+     * @param ?string $localPath
      * 
      * @return Mapping
      */
-    public function setLocalPath(string $localPath): Mapping
+    public function setLocalPath(?string $localPath): Mapping
     {
         $this->localPath = $localPath;
         return $this;

@@ -1,4 +1,6 @@
 twig:
+    globals:
+        media_path: '%env(MEDIA_PATH)%'
     default_path: '%kernel.project_dir%/templates'
     debug: '%kernel.debug%'
     strict_variables: '%kernel.debug%'

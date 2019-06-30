@@ -39,8 +39,8 @@ class NetworkScanner
         foreach ($knownHosts as $host) {
             if ($host != $this->localIp) {
                 $hosts[] = [
-                    'ip' => $host,
-                    'port' => $this->port
+                    'IP' => $host,
+                    'PORT' => $this->port
                 ];
             }
         }

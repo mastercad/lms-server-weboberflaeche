@@ -28,7 +28,9 @@ class MediaTypeController extends AbstractController
         if ('json' === $responseType) {
             return new JsonResponse($mediaTypes);
         }
-        return $this->render('media-types/index.html.twig');
+        return $this->render('media-types/index.html.twig', [
+            'mediaTypes' => $mediaTypes
+        ]);
     }
 
     /**

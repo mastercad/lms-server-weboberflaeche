@@ -1,7 +1,7 @@
 <ul>
     {% for client in clients %}
         <li class="station-drop-down-entry" data-id="{{ client.id }}">
-            <a href="#{{ client.id }}">{{ client.name }}</a>
+            <a href="#{{ client.id }}">{{ client.id}} - {{ client.name }}</a>
         </li>
     {% endfor %}
 </ul>

@@ -6,12 +6,13 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Details zu Mapping Eintrag
-                    {% if form.vars.value.id is not null %}
+                <h5 class="modal-title">{{ form_label(form) }}
+<!--                    {% if form.vars.value.id is not null %}
                         {{ form.vars.value.id }} bearbeiten
                     {% else %}
                         anlegen
-                    {% endif %}</h5>
+                    {% endif %} -->
+                </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
