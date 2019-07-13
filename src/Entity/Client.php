@@ -33,7 +33,7 @@ class Client implements \JsonSerializable
     /**
      * @var string
      *
-     * @ORM\Column(name="ip", type="string", length=15, nullable=false)
+     * @ORM\Column(name="ip", type="string", length=250, nullable=false)
      */
     private $ip;
 

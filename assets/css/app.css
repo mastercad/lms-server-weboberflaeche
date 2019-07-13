@@ -37,3 +37,8 @@ body {
 .file-select-btn {
     cursor: pointer;
 }
+
+.progress-bar-row {
+    border-radius: 2px;
+    border: 1px solid #0062cc;
+}

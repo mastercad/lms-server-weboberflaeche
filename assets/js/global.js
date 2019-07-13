@@ -189,7 +189,7 @@ function create_online_client_select_entry(client) {
         '   <i class="ml-2 fa fa-edit edit-client-entry d-none" data-id="'+client['id']+'"></i>' +
         '</li>');
 
-    $.get("/client/detail/"+Base64.encode('http://'+client['IP']+':'+client['PORT']), 
+    $.get("/client/detail/"+Base64.encode(client['IP']+':'+client['PORT']), 
         function(result) {
             if (500 != result.code) {
                 clientListEntry.replaceWith(create_client_select_entry(result.content));
@@ -313,22 +313,25 @@ function sync_mappings() {
                         'client_id': clients[clientPos],
                         'current_client_id': parse_current_selected_client()
                     }, function(response) {
+
                         if (true === response.success) {
                             let token = response.token;
                             let progressBarContainer = $('#progress_bar_container_'+current_mapping_id);
-                            let progressDiv = $('<div id="prograss_bar_container_'+token+'" class="row">'+
+                            let progressDiv = $('<div id="prograss_bar_container_'+token+'" class="row progress-bar-row">'+
                                 '<div id="prograss_bar_'+token+'" class="progress-bar progress-bar-striped progress-bar-animated progress-bar-'+token+'" role="progressbar" style="width: 0%; height: 5px" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>'+
                             '</div>');
                             
                             progressTimeOuts[token] = setInterval(
                                 function() {
                                     $.get('/transfer/progress/'+token+'/'+client_id+'?response_type=json', function(response) {
-                                        $(progressDiv).attr('width', response.progress.percentage+"%");
-                                        $(progressDiv).attr('aria-valuenow', response.progress.current_size);
-                                        $(progressDiv).html(response.progress.percentage);
+                                        if (undefined !== response.progress) {
+                                            $(progressDiv).attr('width', response.progress.percentage+"%");
+                                            $(progressDiv).attr('aria-valuenow', response.progress.current_size);
+                                            $(progressDiv).html(response.progress.percentage);
 
-                                        if (100 == parseInt(response.progress.percentage)) {
-                                            clearInterval(progressTimeOuts[token]);
+                                            if (100 == parseInt(response.progress.percentage)) {
+                                                clearInterval(progressTimeOuts[token]);
+                                            }
                                         }
                                     });
                                 }, 5000
@@ -343,6 +346,7 @@ function sync_mappings() {
                                 'token': token,
                                 'current_client_id': parse_current_selected_client()
                             }, function (response) {
+                                clearInterval(progressTimeOuts[token]);
                                 if (200 == response.code) {
                                     $(progressDiv).fadeOut(2000, function() {
                                         progressDiv.remove();

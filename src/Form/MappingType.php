@@ -16,8 +16,8 @@ class MappingType extends AbstractType {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add(
-            'id', 
-            NumberType::class, 
+            'id',
+            NumberType::class,
             [
                 'attr' =>
                     [
@@ -29,25 +29,25 @@ class MappingType extends AbstractType {
             ->add('additional_information', TextType::class)
             ->add('local_path', TextType::class, ['required' => false])
             ->add(
-                'lms_path', 
-                TextType::class, 
+                'lms_path',
+                TextType::class,
                 [
                     'attr' => [
-                        'data-path' => $_ENV['MEDIA_PATH']
+                        'data-path' => '/'
                     ]
                 ]
             )
             ->add(
-                'client', 
-                EntityType::class, 
+                'client',
+                EntityType::class,
                 [
                     'class' => Client::class,
                     'choice_label' => 'name'
                 ]
             ) 
             ->add(
-                'media_type', 
-                EntityType::class, 
+                'media_type',
+                EntityType::class,
                 [
                     'class' => MediaType::class,
                     'choice_label' => 'name'

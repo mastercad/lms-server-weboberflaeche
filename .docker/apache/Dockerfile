@@ -1,6 +1,6 @@
 FROM debian:stretch
 
-ENV HTTPD_PREFIX /usr/local/apache2
+ENV HTTPD_PREFIX /var/www/lms_server
 ENV PATH $HTTPD_PREFIX/bin:$PATH
 
 RUN mkdir -p "$HTTPD_PREFIX" \
@@ -13,7 +13,9 @@ RUN apt-get update \
     apache2 curl \
     && rm -r /var/lib/apt/lists/*
 
-RUN a2enmod proxy_fcgi ssl rewrite proxy proxy_balancer proxy_http proxy_ajp
+RUN a2dismod mpm_event
+RUN a2enmod proxy_fcgi ssl rewrite proxy proxy_balancer proxy_http proxy_ajp mpm_worker
+
 RUN sed -i '/Global configuration/a \
 ServerName localhost \
 ' /etc/apache2/apache2.conf
@@ -22,4 +24,4 @@ EXPOSE 80 443
 
 RUN rm -f /run/apache2/apache2.pid
 
-CMD apachectl  -DFOREGROUND -e info
+CMD apachectl -DFOREGROUND -e info

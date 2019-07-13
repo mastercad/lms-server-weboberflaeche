@@ -13,8 +13,11 @@ use App\Entity\Client;
 use GuzzleHttp\Client as GuzzleHttpClient;
 use GuzzleHttp\RequestOptions;
 use Doctrine\DBAL\Exception\ServerException;
+use GuzzleHttp\Cookie\CookieJar;
+use GuzzleHttp\Cookie\SetCookie;
+use GuzzleHttp\Psr7\Response;
 
-class TransferController extends AbstractController 
+class TransferController extends AbstractController
 {
     /**
      * List all Files in given path
@@ -25,7 +28,7 @@ class TransferController extends AbstractController
      */
     public function listDirectory(DirectoryValidator $directoryValidator, File $fileService, string $path)
     {
-        $path = base64_decode($path);
+        $path = $_ENV['MEDIA_PATH'].'/'.base64_decode($path);
         try {
             $directoryValidator->validate($path);
 
@@ -57,24 +60,42 @@ class TransferController extends AbstractController
         $lmsClient = $this->getDoctrine()->getRepository(Client::class)->findOneBy(['id' => $clientId]);
 
         try {
-            $httpClient = new GuzzleHttpClient();
-            
+#            $domain = 'byte-artist.de';
+#            $values = ['PHP_SESSION_UPLOAD_PROGRESS' => $token];
+##            $values = ['upload_progress_'.$token];
+#            $cookieJar = CookieJar::fromArray($values, $domain);
+
+            $httpClient = new GuzzleHttpClient([
+#                'base_uri' => $lmsClient->getIp(),
+#                'cookies'  => $cookieJar
+                'cookies'  => true,
+                'debug' => false,
+#                'decode_content' => false,
+                'exceptions' => false,
+                'verify' => false
+            ]);
+
+            /** @var Response $currentResponse */
             $currentResponse = $httpClient->post(
-                $lmsClient->getIp().'/api/transfer/store', 
+                $lmsClient->getIp().'/api/transfer/store',
                 [
-                    RequestOptions::HEADERS => [
-#                            'Accept' => 'application/json'
-                    ],
+#                    RequestOptions::HEADERS => [
+#                        'Accept' => 'application/json'
+#                    ],
                     RequestOptions::MULTIPART => [
-                        [
-                            'name' => 'upload',
-                            'contents' => fopen($mapping['lms_path'], 'rb'),
-//                            'contents' => file_get_contents($mapping['lms_path']),
-                            'filename' => basename($mapping['lms_path'])
-                        ],
                         [
                             'name' => 'token',
                             'contents' => $token
+                        ],
+                        [
+                            'name' => 'upload_progress_'.$token,
+                            'contents' => 'mappings'
+                        ],
+                        [
+                            'name' => 'upload',
+                            'contents' => fopen($_ENV['MEDIA_PATH'].$mapping['lms_path'], 'rb'),
+//                            'contents' => file_get_contents($mapping['lms_path']),
+                            'filename' => basename($mapping['lms_path'])
                         ]
                     ]
                 ]
@@ -83,7 +104,11 @@ class TransferController extends AbstractController
             $logger->debug($exception->getResponse()->getBody()->getContents());
         }
 
-        $response = ['code' => 200, 'content' => "file transfer finished"];
+        $logger->info("Response nach Send: ".print_r($currentResponse, true));
+        $response = [
+            'code' => $currentResponse->getStatusCode(),
+            'content' => 200 === $currentResponse->getStatusCode() ? "file transfer finished" : $currentResponse->getBody()->getContents()
+        ];
 
         if ('json' === $responseType) {
             return new JsonResponse($response);
@@ -117,11 +142,11 @@ class TransferController extends AbstractController
             
             /** Handle Token with client */
             $currentResponse = $httpClient->post(
-                $client->getIp().'/api/transfer/handshake', 
+                $client->getIp().'/api/transfer/handshake',
                 [
                     RequestOptions::FORM_PARAMS => [
                         'mapping' => $mapping,
-                        'file_size' => filesize($mapping['lms_path'])
+                        'file_size' => filesize($_ENV['MEDIA_PATH'].$mapping['lms_path'])
                     ],
                     RequestOptions::HEADERS => [
                         'Accept' => 'application/x-www-form-urlencoded',
@@ -152,6 +177,7 @@ class TransferController extends AbstractController
      */
     public function progressAction(Request $request, $token, $clientId)
     {
+#        session_write_close();
         $responseType = $request->get('response_type');
         $client = $this->getDoctrine()->getRepository(Client::class)->findOneBy(['id' => $clientId]);
         $httpClient = new GuzzleHttpClient();
@@ -163,5 +189,16 @@ class TransferController extends AbstractController
             return new JsonResponse(json_decode($response->getBody()->getContents()));
         }
 
+    }
+
+    /**
+     * Recives current progress for given token from given client.
+     *
+     * @Route("/transfer/progress-send", name="transfer-progress-send")
+     *
+     */
+    public function progressSendAction()
+    {
+        return $this->render('transfer/progress-send.html.twig');
     }
 }
