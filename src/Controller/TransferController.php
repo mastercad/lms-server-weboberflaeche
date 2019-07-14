@@ -54,8 +54,9 @@ class TransferController extends AbstractController
         $mapping = $request->get('mapping');
         $token = $request->get('token');
         $clientId = $request->get('client_id');
-
-        $mapping['children'] = $clientId;
+        $updateResponse = null;
+        
+        $mapping['client'] = $clientId;
 
         $lmsClient = $this->getDoctrine()->getRepository(Client::class)->findOneBy(['id' => $clientId]);
 
@@ -75,8 +76,8 @@ class TransferController extends AbstractController
                 'verify' => false
             ]);
 
-            /** @var Response $currentResponse */
-            $currentResponse = $httpClient->post(
+            /** @var Response $storeResponse */
+            $storeResponse = $httpClient->post(
                 $lmsClient->getIp().'/api/transfer/store',
                 [
 #                    RequestOptions::HEADERS => [
@@ -100,14 +101,31 @@ class TransferController extends AbstractController
                     ]
                 ]
             );
+
+            if (200 == $storeResponse->getStatusCode()) {
+                $updateResponse = $httpClient->put(
+                    $lmsClient->getIp().'/api/mapping',
+                    [
+                        RequestOptions::FORM_PARAMS => [
+                            'mapping' => $mapping
+                        ]
+                    ]
+                );
+            }
+
         } catch (ServerException $exception) {
             $logger->debug($exception->getResponse()->getBody()->getContents());
         }
 
-        $logger->info("Response nach Send: ".print_r($currentResponse, true));
+        $logger->info("Response nach Send: Code ".print_r($storeResponse->getStatusCode()." - Content: ".$storeResponse->getBody()->getContents(), true));
+
+        if ($updateResponse instanceof Response) {
+            $logger->info("Response nach Update: Code ".print_r($updateResponse->getStatusCode()." - Content: ".$updateResponse->getBody()->getContents(), true));
+        }
+
         $response = [
-            'code' => $currentResponse->getStatusCode(),
-            'content' => 200 === $currentResponse->getStatusCode() ? "file transfer finished" : $currentResponse->getBody()->getContents()
+            'code' => $storeResponse->getStatusCode(),
+            'content' => 200 == $storeResponse->getStatusCode() ? "file transfer finished" : $storeResponse->getBody()->getContents()
         ];
 
         if ('json' === $responseType) {

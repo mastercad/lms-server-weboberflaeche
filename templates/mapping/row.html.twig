@@ -25,6 +25,12 @@
             <div class="col-lg-10 input-lms-path" data-orig="{{ mapping.getLmsPath|base64_encode }}">
                 {{ mapping.getLmsPath }}
             </div>
+            <div class="col-lg-10 input-client-id d-none" data-orig="{{ mapping.getClient.getId|base64_encode }}">
+                {{ mapping.getClient.getId }}
+            </div>
+            <div class="col-lg-10 input-media-type-id d-none" data-orig="{{ mapping.getMediaType.getId|base64_encode }}">
+                {{ mapping.getMediaType.getId }}
+            </div>
 
         </div>
     </td>

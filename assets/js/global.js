@@ -376,7 +376,12 @@ function collect_mapping_data_for_selected_row(id) {
     let lms_path_orig = Base64.decode(mapping_row.find('.input-lms-path').data('orig'));
     let local_path = $.trim(mapping_row.find('.input-local-path').text());
     let local_path_orig = Base64.decode(mapping_row.find('.input-local-path').data('orig'));
+    let client_id = $.trim(mapping_row.find('.input-client-id').text());
+    let client_id_orig = Base64.decode(mapping_row.find('.input-client-id').data('orig'));
+    let media_type_id = $.trim(mapping_row.find('.input-media-type-id').text());
+    let media_type_id_orig = Base64.decode(mapping_row.find('.input-media-type-id').data('orig'));
 
+    // media type orig and client id orig are currently changed because this should not changed
     if (1 
         || rfid != rfid_orig
         || additional_information != additional_information_orig
@@ -389,6 +394,8 @@ function collect_mapping_data_for_selected_row(id) {
         mapping['additional_information'] = additional_information;
         mapping['lms_path'] = lms_path;
         mapping['local_path'] = local_path;
+        mapping['client'] = client_id_orig;
+        mapping['media_type'] = media_type_id_orig;
 
         return mapping
     }
