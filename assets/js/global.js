@@ -285,23 +285,12 @@ function sync_mappings() {
                 clients.push($(this).data('id'));
             });
 
+            modal.modal('hide');
+
             if (0 >= clients.length) {
                 alert("Kein Client ausgewählt!");
                 return false;
             }
-
-            // old version is send all data to server and let it do his job => synchron => no information about status
-            /**
-            post('/mapping/sync?response_type=json', {
-                'mappings': mappings, 
-                'clients': clients,
-                'id': parse_current_selected_client()
-            }, function(response) {
-                if (true === response.success) {
-                    modal.modal('hide');
-                }
-            })
-            */
 
             for (let mappingPos = 0; mappingPos < mappings.length; ++mappingPos) {
                 for (let clientPos = 0; clientPos < clients.length; ++clientPos) {
