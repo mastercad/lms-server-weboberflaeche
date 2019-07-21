@@ -45,7 +45,7 @@ class ClientController extends AbstractController
      * Lädt eine Übersicht aller bekannten Clients.
      *
      * @param Request $request Der gesendete Request vom Frontend.
-     * 
+     *
      * @access public
      * 
      * @return Response|JsonResponse
