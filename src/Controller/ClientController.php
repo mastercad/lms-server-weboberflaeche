@@ -203,7 +203,7 @@ class ClientController extends AbstractController
 
                     return new JsonResponse(
                         [
-                            'code' => 200, 
+                            'code' => 200,
                             'content' => json_decode($response->getBody()->getContents())
                         ]
                     );
