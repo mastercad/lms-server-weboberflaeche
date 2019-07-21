@@ -3,7 +3,7 @@
  * Klasse für die Verarbeitung von Clients
  *
  * PHP Version 7
- * 
+ *
  * @category   PHP
  * @package    LmsClient
  * @subpackage Controller
