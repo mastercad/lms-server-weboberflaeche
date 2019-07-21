@@ -108,7 +108,7 @@ class ClientController extends AbstractController
      * Load Details from given online Client.
      *
      * @Route("/client/detail/{url}", name="client-online-details")
-     * 
+     *
      * @return JsonResponse
      */
     public function loadOnlineClientDetails($url)
