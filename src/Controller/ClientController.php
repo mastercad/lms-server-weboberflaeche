@@ -74,7 +74,7 @@ class ClientController extends AbstractController
      * List all Available Clients in Network
      *
      * @param NetworkScanner $networkScanner Service for scanning network.
-     * 
+     *
      * @Route("/clients/online", name="clients-online-index")
      * 
      * @return JsonResponse
