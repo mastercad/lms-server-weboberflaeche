@@ -97,7 +97,9 @@ class ClientController extends AbstractController
                 return new JsonResponse($clients);
             }
         } catch (\InvalidArgumentException $exception) {
-            return new JsonResponse(['code' => 500, 'content' => 'Scan deaktiviert, aber Clients im falschen Format hinterlegt!']);
+            return new JsonResponse(
+                ['code' => 500, 'content' => 'Scan deaktiviert, aber Clients im falschen Format hinterlegt!']
+            );
         }
     }
 
