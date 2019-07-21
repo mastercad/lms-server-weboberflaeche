@@ -28,12 +28,19 @@
         "symfony/yaml": "4.3.*"
     },
     "require-dev": {
+        "ext-xsl": "*",
         "symfony/debug-pack": "*",
         "symfony/maker-bundle": "^1.0",
         "symfony/phpunit-bridge": "4.3.*",
         "symfony/profiler-pack": "*",
         "symfony/test-pack": "*",
-        "symfony/web-server-bundle": "4.3.*"
+        "symfony/web-server-bundle": "4.3.*",
+        "pdepend/pdepend": "^2.5",
+        "phploc/phploc": "^5.0",
+        "phpmd/phpmd": "^2.6",
+        "sebastian/phpcpd": "^4.1",
+        "squizlabs/php_codesniffer": "^3.4",
+        "theseer/phpdox": "^0.12.0"
     },
     "config": {
         "preferred-install": {
