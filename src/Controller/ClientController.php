@@ -222,7 +222,7 @@ class ClientController extends AbstractController
                     'code' => 500,
                     'content' => $exception->getMessage()
                 ]
-            );  
+            );
         } catch (TransportException $exception) {
             return new JsonResponse(
                 [
