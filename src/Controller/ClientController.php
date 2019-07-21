@@ -122,7 +122,7 @@ class ClientController extends AbstractController
             $code = $response->getStatusCode();
             $content = (string) $response->getBody()->getContents();
 
-            if ($code >= 200 
+            if ($code >= 200
                 && $code < 400 
                 && 0 < strlen($content)
             ) {
