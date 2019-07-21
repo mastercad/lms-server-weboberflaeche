@@ -104,7 +104,7 @@ class ClientController extends AbstractController
     /**
      * @todo wenn ich mit testen und abstimmen fertig bin, muss das hier alles in
      * einen service ausgelagert werden!
-     * 
+     *
      * Load Details from given online Client.
      *
      * @Route("/client/detail/{url}", name="client-online-details")
