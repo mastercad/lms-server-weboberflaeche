@@ -123,7 +123,7 @@ class ClientController extends AbstractController
             $content = (string) $response->getBody()->getContents();
 
             if ($code >= 200
-                && $code < 400 
+                && $code < 400
                 && 0 < strlen($content)
             ) {
                 return new JsonResponse(
