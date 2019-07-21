@@ -229,7 +229,7 @@ class ClientController extends AbstractController
                     'code' => 500,
                     'content' => $exception->getMessage()
                 ]
-            );  
+            );
         }
         return new JsonResponse(
             [
