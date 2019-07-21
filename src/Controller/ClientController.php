@@ -10,7 +10,7 @@
  * @author     Andreas Kempe <andreas.kempe@byte-artist.de>
  * @copyright  2019 Andreas Kempe
  * @license    GPL http://opensource.org/licenses/gpl-license.php GNU Public License
- * @version    GIT: 
+ * @version    GIT:
  * @link       http://lms-client.byte-artist.de
  */
 namespace App\Controller;
