@@ -257,7 +257,7 @@ function handle_save_result(modal, controller, response, callback) {
 let progressTimeOuts = [];
 
 /**
- * Einsprung für das Syncen des Mappings zwischen den Clients
+ * Einsprung für das Übertragen des Mappings an die ausgewählten Clients
  */
 function sync_mappings() {
     let mappings = [];
@@ -392,10 +392,10 @@ function collect_mapping_data_for_selected_row(id) {
     return false;
 }
 
-
-/*****
- * War gesplittet in directory_browser aber ich bekomme es nicht hin, die inhalte von da auch zu verwenden
- */
+/************************************************************************************
+ * Directory Browser Functionality. I cant split this in separate file and working
+ * in encore. Every Time the init_file_select Function is missing in global.js
+ ***********************************************************************************/
 var current_absolut_path = '';
 var current_folder_level = 0;
 var file_select_modal = undefined;

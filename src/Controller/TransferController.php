@@ -123,13 +123,11 @@ class TransferController extends AbstractController
             $logger->info("Response nach Update: Code ".print_r($updateResponse->getStatusCode()." - Content: ".$updateResponse->getBody()->getContents(), true));
         }
 
-        $response = [
-            'code' => $storeResponse->getStatusCode(),
-            'content' => 200 == $storeResponse->getStatusCode() ? "file transfer finished" : $storeResponse->getBody()->getContents()
-        ];
-
         if ('json' === $responseType) {
-            return new JsonResponse($response);
+            return new JsonResponse([
+                'code' => $storeResponse->getStatusCode(),
+                'content' => 200 == $storeResponse->getStatusCode() ? "file transfer finished" : $storeResponse->getBody()->getContents()
+            ]);
         }
         return $this->render('transfer/send.html.twig');
     }
