@@ -49,7 +49,7 @@ class ClientController extends AbstractController
      * @access public
      *
      * @return Response|JsonResponse
-     * 
+     *
      * @Route("/clients", name="client-index")
      */
     public function indexAction(Request $request)
