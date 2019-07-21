@@ -47,7 +47,7 @@ class ClientController extends AbstractController
      * @param Request $request Der gesendete Request vom Frontend.
      *
      * @access public
-     * 
+     *
      * @return Response|JsonResponse
      * 
      * @Route("/clients", name="client-index")
