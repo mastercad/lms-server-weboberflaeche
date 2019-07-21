@@ -183,7 +183,7 @@ class ClientController extends AbstractController
                     if (!property_exists($jsonContent, 'id')) {
                         $client = new GuzzleHttpClient();
                         $response = $client->post(
-                            base64_decode($url).'/api/client', 
+                            base64_decode($url).'/api/client',
                             [
                                 RequestOptions::FORM_PARAMS => [
                                     'client' => [
