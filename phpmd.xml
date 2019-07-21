@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!--
+When you have to exclude a rule, do it in the ruleset.
+You must have one declaration of each ruleset.
+-->
+<ruleset name="PHP_MessDetector">
+    <description>The coding standard for PHP_MessDetector itself.</description>
+
+    <rule ref="rulesets/naming.xml">
+        <exclude name="LongVariable" />
+        <exclude name="ShortVariable" />
+    </rule>
+
+    <rule ref="rulesets/cleancode.xml">
+        <exclude name="BooleanArgumentFlag" />
+        <exclude name="ElseExpression" />
+        <exclude name="StaticAccess" />
+    </rule>
+
+    <rule ref="rulesets/design.xml"/>
+    <rule ref="rulesets/codesize.xml">
+        <exclude name="CyclomaticComplexity" />
+        <exclude name="ExcessiveClassComplexity" />
+        <exclude name="ExcessiveClassLength" />
+        <exclude name="ExcessivePublicCount" />
+        <exclude name="TooManyFields" />
+        <exclude name="TooManyPublicMethods" />
+    </rule>
+    <rule ref="rulesets/controversial.xml"/>
+    <rule ref="rulesets/unusedcode.xml">
+        <exclude name="UnusedFormalParameter" />
+    </rule>
+</ruleset>
