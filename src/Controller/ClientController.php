@@ -243,7 +243,7 @@ class ClientController extends AbstractController
      * Lädt den modal Inhalt für die Client Auswahl.
      *
      * @return Response
-     * 
+     *
      * @access public
      * 
      * @Route("/client/select-dialog", name="client-select-dialog")
