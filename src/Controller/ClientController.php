@@ -241,7 +241,7 @@ class ClientController extends AbstractController
 
     /**
      * Lädt den modal Inhalt für die Client Auswahl.
-     * 
+     *
      * @return Response
      * 
      * @access public
