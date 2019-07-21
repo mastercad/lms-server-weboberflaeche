@@ -31,7 +31,7 @@ use GuzzleHttp\RequestOptions;
 
 /**
  * Klasse für alle notwendigen Frontend Interaktionen für einen Client.
- * 
+ *
  * @category   PHP
  * @package    LmsClient
  * @subpackage Controller
