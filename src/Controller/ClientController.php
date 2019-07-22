@@ -261,15 +261,15 @@ class ClientController extends AbstractController
     }
 
     /**
-     * Lädt die Detailansicht zu einem bestimmten Client. 
-     * 
+     * Lädt die Detailansicht zu einem bestimmten Client.
+     *
      * @param Request $request Der gesendete Request vom Frontend.
      * @param int     $id      Die Id des gewünschten DB Eintrages zum Client.
      *
      * @return Response|JsonResponse
-     * 
+     *
      * @access public
-     * 
+     *
      * @Route("/client/show/{id<\d+>}", name="client-show", requirements={"id"="\d+"})
      */
     public function showAction(Request $request, int $id) : Response
@@ -296,9 +296,9 @@ class ClientController extends AbstractController
      * @param int     $id      Die Id des gewünschten DB Eintrages zum Client.
      *
      * @return Response|JsonResponse
-     * 
+     *
      * @access public
-     * 
+     *
      * @Route("/client/edit/{id<\d+>}", name="client-edit", requirements={"id"="\d+"})
      */
     public function editAction(Request $request, int $id) : Response
@@ -326,9 +326,9 @@ class ClientController extends AbstractController
      * @param Request $request Der gesendete Request vom Frontend.
      *
      * @return Response|JsonResponse
-     * 
+     *
      * @access public
-     * 
+     *
      * @Route("/client/save", name="client-save", methods={"POST"})
      */
     public function saveAction(Request $request) : Response
@@ -353,14 +353,12 @@ class ClientController extends AbstractController
             $entityManager->flush();
 
             $result['success'] = true;
-
-//            return $this->redirectToRoute('task_success');
         } else {
             $content = preg_replace(
-                '/^.*?<div class="modal/is', 
-                '<div class="modal', 
+                '/^.*?<div class="modal/is',
+                '<div class="modal',
                 $this->render(
-                    'client/edit.html.twig', 
+                    'client/edit.html.twig',
                     [
                         'form' => $form->createView(),
                         'id' => $id
@@ -376,7 +374,7 @@ class ClientController extends AbstractController
         }
 
         return $this->render(
-            'client/save.html.twig', 
+            'client/save.html.twig',
             [
                 'result' => $result
             ]
@@ -385,14 +383,14 @@ class ClientController extends AbstractController
 
     /**
      * Action zum Löschen eines übergebenen Eintrages.
-     * 
+     *
      * @param Request $request Die gesendete Anfrage vom Frontend.
      * @param int     $id      Id des zu löschenden Client Eintrages.
-     * 
+     *
      * @return Response|JsonResponse
-     * 
+     *
      * @access public
-     * 
+     *
      * @Route("/client/delete/{$id<\d+>}", name="client-delete", requirements={"id"="\d+"})
      */
     public function deleteAction(Request $request, int $id) : Response
@@ -409,7 +407,7 @@ class ClientController extends AbstractController
 
         if ('json' === $responseType) {
             return new JsonResponse($result);
-        } 
+        }
 
         return $this->render(
             'client/save.html.twig', 
