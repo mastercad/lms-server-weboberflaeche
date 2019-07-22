@@ -28,7 +28,7 @@ class MappingController extends AbstractController
         $mappings = $this->getDoctrine()->getRepository(Mapping::class)->findBy(['client' => $clientId]);
 
         return $this->render(
-            'mapping/index.html.twig', 
+            'mapping/index.html.twig',
             [
                 'mappings' => $mappings
             ]
@@ -42,7 +42,7 @@ class MappingController extends AbstractController
      *
      * @return Response
      */
-    public function showAction(Mapping $mapping) 
+    public function showAction(Mapping $mapping)
     {
 #        $mapping = $this->getDoctrine()->getRepository(Mapping::class)->find($id);
 
@@ -62,18 +62,18 @@ class MappingController extends AbstractController
      *
      * @return Response
      */
-    public function editAction(Request $request, $id) 
+    public function editAction(Request $request, $id)
     {
         $clientId = $request->get('client');
 
         /** @var Mapping $mapping */
         $mapping = $this->getDoctrine()->getRepository(Mapping::class)->find($id);
 
-        if ($id 
+        if ($id
             && !$mapping
         ) {
             throw $this->createNotFoundException('Kein Mapping mit ID '.$id.' gefunden!');
-        } else if (!$id && !$mapping) {
+        } elseif (!$id && !$mapping) {
             $mapping = new Mapping();
         }
         if ($clientId) {
@@ -96,7 +96,8 @@ class MappingController extends AbstractController
      *
      * @return Response|JsonResponse
      */
-    public function saveAction(Request $request) {
+    public function saveAction(Request $request)
+    {
 
         $responseType = $request->get('response_type');
         $result = ['success' => false];
@@ -119,7 +120,8 @@ class MappingController extends AbstractController
 
             $result['success'] = true;
         } else {
-            $content = preg_replace('/^.*?<div class="modal/is', '<div class="modal', $this->render('mapping/edit.html.twig', [
+            $content = preg_replace('/^.*?<div class="modal/is', '<div class="modal', $this->render('mapping/edit.html.twig', 
+            [
                 'form' => $form->createView(),
                 'id' => $id
             ]));
@@ -146,7 +148,8 @@ class MappingController extends AbstractController
      * @return Response
      * @return JsonResponse
      */
-    public function syncAction(LoggerInterface $logger, Request $request) {
+    public function syncAction(LoggerInterface $logger, Request $request)
+    {
         $mappingsRequest = $request->get('mappings');
         $clientsRequest = $request->get('clients');
 
@@ -162,7 +165,7 @@ class MappingController extends AbstractController
                     
                     /** Handle Token with client */
                     $currentResponse = $httpClient->post(
-                        $lmsClient->getIp().'/api/mapping/sync', 
+                        $lmsClient->getIp().'/api/mapping/sync',
                         [
                             RequestOptions::FORM_PARAMS => [
                                 'mapping' => $mapping,
@@ -179,11 +182,8 @@ class MappingController extends AbstractController
                     $token = json_decode($currentResponse->getBody())->token;
                     
                     $currentResponse = $httpClient->post(
-                        $lmsClient->getIp().'/api/transfer/store', 
+                        $lmsClient->getIp().'/api/transfer/store',
                         [
-                            RequestOptions::HEADERS => [
-    #                            'Accept' => 'application/json'
-                            ],
                             RequestOptions::MULTIPART => [
                                 [
                                     'name' => 'upload',
