@@ -245,7 +245,7 @@ class ClientController extends AbstractController
      * @return Response
      *
      * @access public
-     * 
+     *
      * @Route("/client/select-dialog", name="client-select-dialog")
      */
     public function selectDialogAction() : Response
